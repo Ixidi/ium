@@ -23,7 +23,6 @@ jobs:
       - name: Clone external repo
         run: |
           git clone https://git.wmi.amu.edu.pl/s475257/inzynieria-uczenia-maszynowego external
-          cd external
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -33,21 +32,24 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd external
           pip install -r requirements.txt
           
       - name: Download data
         run: |
+          cd external
           python download_and_process.py
 
       - name: Train model
         run: |
+          cd external
           python train_model.py with larning_rate=${{ github.event.inputs.learning_rate }} epochs=${{ github.event.inputs.epochs }}
 
       - name: Upload model as artifact
         uses: actions/upload-artifact@v4
         with:
           name: model
-          path: .model/model.pth
+          path: external/.model/model.pth
 
   evaluate:
     name: "Evaluate model"
@@ -60,7 +62,6 @@ jobs:
       - name: Clone external repo
         run: |
           git clone https://git.wmi.amu.edu.pl/s475257/inzynieria-uczenia-maszynowego external
-          cd external
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -70,20 +71,23 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd external
           pip install -r requirements.txt
 
       - name: Download data
         run: |
+          cd external
           python download_and_process.py
 
       - name: Download model artifact
         uses: actions/download-artifact@v4
         with:
           name: model
-          path: .model/model.pth
+          path: external/.model/model.pth
 
       - name: Evaluate model
         run: |
+          cd external
           python evaluate_model.py
       
           
